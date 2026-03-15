@@ -23,8 +23,9 @@
 
       <!-- Item Table Headers -->
       <v-row no-gutters class="text-caption text-grey font-weight-bold mb-2 px-2">
-        <v-col cols="6">Item</v-col>
+        <v-col cols="4">Item</v-col>
         <v-col cols="3" class="text-center">Quantity</v-col>
+        <v-col cols="2" class="text-center">Discount</v-col>
         <v-col cols="3" class="text-right">Amount</v-col>
       </v-row>
 
@@ -41,13 +42,13 @@
           class="item-row align-center py-3 px-2 border-b-light"
           no-gutters
         >
-          <v-col cols="6" class="d-flex align-center">
+          <v-col cols="4" class="d-flex align-center">
             <v-avatar size="40" class="mr-3 bg-grey-lighten-4 rounded-lg">
               <v-img :src="item.image || '/assets/ppos/js/posapp/components/pos/placeholder-image.png'"></v-img>
             </v-avatar>
             <div class="overflow-hidden">
               <div class="text-body-2 font-weight-bold text-truncate">{{ item.item_name }}</div>
-              <div class="text-caption text-grey">Unit Price: {{ currencySymbol(pos_profile.currency) }}{{ formtCurrency(item.rate) }}</div>
+              <div class="text-caption text-grey">Price: {{ formtCurrency(item.rate) }}</div>
             </div>
           </v-col>
           <v-col cols="3" class="text-center">
@@ -69,8 +70,13 @@
               ></v-btn>
             </div>
           </v-col>
+          <v-col cols="2" class="text-center">
+            <div class="text-caption font-weight-bold text-error">
+              {{ flt(item.discount_amount) > 0 ? '-' + formtCurrency(flt(item.qty) * flt(item.discount_amount)) : '-' }}
+            </div>
+          </v-col>
           <v-col cols="3" class="text-right font-weight-bold text-body-2">
-            {{ currencySymbol(pos_profile.currency) }}{{ formtCurrency(item.qty * item.rate) }}
+            {{ currencySymbol(pos_profile.currency) }} {{ formtCurrency(flt(item.qty) * flt(item.rate)) }}
           </v-col>
         </v-row>
       </div>
@@ -94,21 +100,21 @@
 
       <div class="d-flex justify-space-between mb-2">
         <span class="text-grey">Total Quantity</span>
-        <span class="font-weight-bold">{{ items.length }} ({{ formtFloat(total_qty) }} Units)</span>
+        <span class="font-weight-bold">{{ items.length }} ({{ formtFloat(total_qty) }})</span>
       </div>
       <div class="d-flex justify-space-between mb-2">
         <span class="text-grey">Net Total</span>
-        <span class="font-weight-bold">{{ currencySymbol(pos_profile.currency) }}{{ formtCurrency(subtotal) }}</span>
+        <span class="font-weight-bold">{{ currencySymbol(pos_profile.currency) }} {{ formtCurrency(subtotal) }}</span>
       </div>
-      <div v-if="discount_amount > 0" class="d-flex justify-space-between mb-2 text-error">
+      <div v-if="flt(discount_amount) > 0" class="d-flex justify-space-between mb-2 text-error">
         <span>Discount</span>
-        <span class="font-weight-bold">- {{ currencySymbol(pos_profile.currency) }}{{ formtCurrency(discount_amount) }}</span>
+        <span class="font-weight-bold">- {{ formtCurrency(discount_amount) }}</span>
       </div>
       
       <div class="d-flex justify-space-between align-end mt-4 mb-6">
         <span class="text-h6 font-weight-bold">Grand Total</span>
         <span class="text-h5 font-weight-black text-primary">
-          {{ currencySymbol(pos_profile.currency) }}{{ formtCurrency(grand_total) }}
+          {{ currencySymbol(pos_profile.currency) }} {{ formtCurrency(subtotal) }}
         </span>
       </div>
 
