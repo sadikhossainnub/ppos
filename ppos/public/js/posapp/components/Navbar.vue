@@ -17,8 +17,7 @@
         style="cursor: pointer"
         class="text-uppercase primary--text"
       >
-        <span class="font-weight-light">pos</span>
-        <span>awesome</span>
+        <span>PPOS</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -176,7 +175,7 @@ export default {
     },
     go_about() {
       const win = window.open(
-        'https://github.com/yrestom/POS-Awesome',
+        'https://github.com/yrestom/PPOS',
         '_blank'
       );
       win.focus();

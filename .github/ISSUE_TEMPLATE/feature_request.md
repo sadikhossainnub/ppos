@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-<!-- 💚 Thanks for your time to make POS Awesome better with your feedbacks 💚 -->
+<!-- 💚 Thanks for your time to make PPOS better with your feedback 💚 -->
 
 ### Is your feature request related to a problem? Please describe.
 

@@ -110,7 +110,7 @@ Available in GitHub [discussions](https://github.com/yrestom/PPOS/discussions)
 
 ### Contributing
 
-Will using for this the same guidelines from Erpnext
+We follow the same contribution guidelines as ERPNext:
 
 1. [Issue Guidelines](https://github.com/frappe/erpnext/wiki/Issue-Guidelines)
 2. [Pull Request Requirements](https://github.com/frappe/erpnext/wiki/Contribution-Guidelines)

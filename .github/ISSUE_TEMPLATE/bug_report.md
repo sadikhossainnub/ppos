@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-<!--  Thanks for your time to make POS Awesome better with your feedback 👍
+<!--  Thanks for your time to make PPOS better with your feedback 👍
 
 **IMPORTANT** Before reporting a bug:
 
@@ -18,7 +18,7 @@ A properly detailed bug report can save a LOT of time and help fix issues as soo
 
 - Frappe: <!-- ex: V12.13.0 -->
 - Erpnext: <!-- ex: V13.14.0 -->
-- POS Awesome: <!-- ex: V01.0.2 -->
+- PPOS: <!-- ex: V01.0.2 -->
 
 ### Stacktrace / full error message
 
