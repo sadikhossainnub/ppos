@@ -1,6 +1,6 @@
 <div align="center">
     <img src="https://frappecloud.com/files/pos.png" height="128">
-    <h2>POS AWESOME</h2>
+    <h2>PPOS</h2>
 </div>
 
 #### An open-source Point of Sale for [Erpnext](https://github.com/frappe/erpnext) using [Vue.js](https://github.com/vuejs/vue) and [Vuetify](https://github.com/vuetifyjs/vuetify)
@@ -47,15 +47,15 @@
 
 #### Frappe Cloud:
 
-One-click installing available if you are hosting on FC from [here](https://frappecloud.com/marketplace/apps/posawesome)
+One-click installing available if you are hosting on FC from [here](https://frappecloud.com/marketplace/apps/ppos)
 
 #### Self Hosting:
 
-1. `bench get-app branch version-14 https://github.com/yrestom/POS-Awesome.git`
+1. `bench get-app branch version-14 https://github.com/yrestom/PPOS.git`
 2. `bench setup requirements`
-3. `bench build --app posawesome`
+3. `bench build --app ppos`
 4. `bench restart`
-5. `bench --site [your.site.name] install-app posawesome`
+5. `bench --site [your.site.name] install-app ppos`
 6. `bench --site [your.site.name] migrate`
 
 ---
@@ -64,7 +64,7 @@ One-click installing available if you are hosting on FC from [here](https://frap
 
 #### Frappe Cloud:
 
-If you are hosting on FC premium support is available [here](https://frappecloud.com/marketplace/apps/posawesome)
+If you are hosting on FC premium support is available [here](https://frappecloud.com/marketplace/apps/ppos)
 
 #### Self Hosting:
 
@@ -72,20 +72,20 @@ If you need premium support please email me [here](mailto:info@totrox.com)
 
 #### Community Support:
 
-Available in GitHub [discussions](https://github.com/yrestom/POS-Awesome/discussions)
+Available in GitHub [discussions](https://github.com/yrestom/PPOS/discussions)
 
 ---
 
 ### New Features and Bug report:
 
-- Please Create Github Issue from [here](https://github.com/yrestom/POS-Awesome/issues/new/choose) after checking the existing issues
+- Please Create Github Issue from [here](https://github.com/yrestom/PPOS/issues/new/choose) after checking the existing issues
 - For paid features, you can email me [here](mailto:info@totrox.com)
 
 ---
 
 ### How To Use:
 
-[POS Awesome Wiki](https://github.com/yrestom/POS-Awesome/wiki)
+[PPOS Wiki](https://github.com/yrestom/PPOS/wiki)
 
 ---
 
@@ -119,6 +119,6 @@ Will using for this the same guidelines from Erpnext
 
 ### License
 
-GNU/General Public License (see [license.txt](https://github.com/yrestom/POS-Awesome/blob/master/license.txt))
+GNU/General Public License (see [license.txt](https://github.com/yrestom/PPOS/blob/master/license.txt))
 
-The POS Awesome code is licensed as GNU General Public License (v3)
+The PPOS code is licensed as GNU General Public License (v3)

@@ -3,6 +3,6 @@
 *.egg-info
 *.swp
 tags
-posawesome/docs/current
+ppos/docs/current
 node_modules
-posawesome/public/dist
+ppos/public/dist
