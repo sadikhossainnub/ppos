@@ -1,27 +1,24 @@
 <template>
   <div>
     <v-card
-      class="selection mx-auto grey lighten-5 mt-3"
+      class="selection mx-auto bg-grey-lighten-5 mt-3"
       style="max-height: 75vh; height: 75vh"
     >
       <v-progress-linear
         :active="loading"
         :indeterminate="loading"
         absolute
-        top
+        location="top"
         color="info"
       ></v-progress-linear>
       <v-row class="items px-2 py-1">
         <v-col class="pb-0 mb-2">
           <v-text-field
-            dense
             clearable
             autofocus
-            outlined
             color="primary"
             :label="frappe._('Search Items')"
             hint="Search by item code, serial number, batch no or barcode"
-            background-color="white"
             hide-details
             v-model="debounce_search"
             @keydown.esc="esc_event"
@@ -31,11 +28,8 @@
         </v-col>
         <v-col cols="3" class="pb-0 mb-2" v-if="pos_profile.ppos_input_qty">
           <v-text-field
-            dense
-            outlined
             color="primary"
             :label="frappe._('QTY')"
-            background-color="white"
             hide-details
             v-model.number="qty"
             type="number"
@@ -47,9 +41,7 @@
           <v-checkbox
             v-model="new_line"
             color="accent"
-            value="true"
             label="NLine"
-            dense
             hide-details
           ></v-checkbox>
         </v-col>
@@ -66,13 +58,13 @@
                 cols="6"
                 min-height="50"
               >
-                <v-card hover="hover" @click="add_item(item)">
+                <v-card hover @click="add_item(item)">
                   <v-img
                     :src="
                       item.image ||
                       '/assets/ppos/js/posapp/components/pos/placeholder-image.png'
                     "
-                    class="white--text align-end"
+                    class="text-white align-end"
                     gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)"
                     height="100px"
                   >
@@ -81,12 +73,12 @@
                       class="text-caption px-1 pb-0"
                     ></v-card-text>
                   </v-img>
-                  <v-card-text class="text--primary pa-1">
-                    <div class="text-caption primary--text">
+                  <v-card-text class="text-primary pa-1">
+                    <div class="text-caption text-primary">
                       {{ currencySymbol(item.currency) || "" }}
                       {{ formtCurrency(item.rate) || 0 }}
                     </div>
-                    <div class="text-caption golden--text">
+                    <div class="text-caption text-golden">
                       {{ formtFloat(item.actual_qty) || 0 }}
                       {{ item.stock_uom || "" }}
                     </div>
@@ -97,66 +89,69 @@
           </div>
           <div fluid class="items" v-if="items_view == 'list'">
             <div class="my-0 py-0 overflow-y-auto" style="max-height: 65vh">
-              <template>
-                <v-data-table
-                  :headers="getItmesHeaders()"
-                  :items="filtred_items"
-                  item-key="item_code"
-                  class="elevation-1"
-                  :items-per-page="itemsPerPage"
-                  hide-default-footer
-                  @click:row="add_item"
-                >
-                  <template v-slot:item.rate="{ item }">
-                    <span class="primary--text"
-                      >{{ currencySymbol(item.currency) }}
-                      {{ formtCurrency(item.rate) }}</span
-                    >
-                  </template>
-                  <template v-slot:item.actual_qty="{ item }">
-                    <span class="golden--text">{{
-                      formtFloat(item.actual_qty)
-                    }}</span>
-                  </template>
-                </v-data-table>
-              </template>
+              <v-data-table
+                :headers="getItmesHeaders()"
+                :items="filtred_items"
+                item-value="item_code"
+                class="elevation-1"
+                :items-per-page="itemsPerPage"
+              >
+                <template v-slot:bottom></template>
+                <template v-slot:item="{ item }">
+                  <tr @click="add_item(item)">
+                    <td v-if="pos_profile.ppos_display_item_code">{{ item.item_name }}</td>
+                    <td v-else>{{ item.item_name }}</td>
+                    <td v-if="pos_profile.ppos_display_item_code">{{ item.item_code }}</td>
+                    <td>
+                      <span class="text-primary">
+                        {{ currencySymbol(item.currency) }}
+                        {{ formtCurrency(item.rate) }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="text-golden">{{
+                        formtFloat(item.actual_qty)
+                      }}</span>
+                    </td>
+                    <td>{{ item.stock_uom }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
             </div>
           </div>
         </v-col>
       </v-row>
     </v-card>
-    <v-card class="cards mb-0 mt-3 pa-2 grey lighten-5">
+    <v-card class="cards mb-0 mt-3 pa-2 bg-grey-lighten-5">
       <v-row no-gutters align="center" justify="center">
         <v-col cols="12">
           <v-select
             :items="items_group"
             :label="frappe._('Items Group')"
-            dense
-            outlined
             hide-details
             v-model="item_group"
-            v-on:change="search_onchange"
+            @update:model-value="search_onchange"
           ></v-select>
         </v-col>
         <v-col cols="3" class="mt-1">
           <v-btn-toggle
             v-model="items_view"
             color="primary"
-            group
-            dense
+            variant="group"
+            density="compact"
             rounded
           >
-            <v-btn small value="list">{{ __("List") }}</v-btn>
-            <v-btn small value="card">{{ __("Card") }}</v-btn>
+            <v-btn size="small" value="list">{{ __("List") }}</v-btn>
+            <v-btn size="small" value="card">{{ __("Card") }}</v-btn>
           </v-btn-toggle>
         </v-col>
         <v-col cols="4" class="mt-2">
-          <v-btn small block color="primary" text @click="show_coupons"
+          <v-btn size="small" block color="primary" variant="text" @click="show_coupons"
             >{{ couponsCount }} {{ __("Coupons") }}</v-btn
           >
         </v-col>
         <v-col cols="5" class="mt-2">
-          <v-btn small block color="primary" text @click="show_offers"
+          <v-btn size="small" block color="primary" variant="text" @click="show_offers"
             >{{ offersCount }} {{ __("Offers") }} : {{ appliedOffersCount }}
             {{ __("Applied") }}</v-btn
           >
@@ -170,6 +165,7 @@
 import { evntBus } from "../../bus";
 import format from "../../format";
 import _ from "lodash";
+
 export default {
   mixins: [format],
   data: () => ({
@@ -205,16 +201,16 @@ export default {
       this.get_items();
     },
     new_line() {
-      evntBus.$emit("set_new_line", this.new_line);
+      evntBus.emit("set_new_line", this.new_line);
     },
   },
 
   methods: {
     show_offers() {
-      evntBus.$emit("show_offers", "true");
+      evntBus.emit("show_offers", "true");
     },
     show_coupons() {
-      evntBus.$emit("show_coupons", "true");
+      evntBus.emit("show_coupons", "true");
     },
     get_items() {
       if (!this.pos_profile) {
@@ -238,7 +234,7 @@ export default {
         !vm.pos_profile.pose_use_limit_search
       ) {
         vm.items = JSON.parse(localStorage.getItem("items_storage"));
-        evntBus.$emit("set_all_items", vm.items);
+        evntBus.emit("set_all_items", vm.items);
         vm.loading = false;
       }
       frappe.call({
@@ -253,7 +249,7 @@ export default {
         callback: function (r) {
           if (r.message) {
             vm.items = r.message;
-            evntBus.$emit("set_all_items", vm.items);
+            evntBus.emit("set_all_items", vm.items);
             vm.loading = false;
             console.info("Items Loaded");
             if (
@@ -306,20 +302,20 @@ export default {
     getItmesHeaders() {
       const items_headers = [
         {
-          text: __("Name"),
+          title: __("Name"),
           align: "start",
           sortable: true,
-          value: "item_name",
+          key: "item_name",
         },
         {
-          text: __("Code"),
+          title: __("Code"),
           align: "start",
           sortable: true,
-          value: "item_code",
+          key: "item_code",
         },
-        { text: __("Rate"), value: "rate", align: "start" },
-        { text: __("Available QTY"), value: "actual_qty", align: "start" },
-        { text: __("UOM"), value: "stock_uom", align: "start" },
+        { title: __("Rate"), key: "rate", align: "start" },
+        { title: __("Available QTY"), key: "actual_qty", align: "start" },
+        { title: __("UOM"), key: "stock_uom", align: "start" },
       ];
       if (!this.pos_profile.ppos_display_item_code) {
         items_headers.splice(1, 1);
@@ -328,14 +324,15 @@ export default {
       return items_headers;
     },
     add_item(item) {
+      if (item.raw) item = item.raw; // In case it's passed from a row click
       item = { ...item };
       if (item.has_variants) {
-        evntBus.$emit("open_variants_model", item, this.items);
+        evntBus.emit("open_variants_model", { item, items: this.items });
       } else {
         if (!item.qty || item.qty === 1) {
           item.qty = Math.abs(this.qty);
         }
-        evntBus.$emit("add_item", item);
+        evntBus.emit("add_item", item);
         this.qty = 1;
       }
     },
@@ -392,7 +389,9 @@ export default {
         this.flags.serial_no = null;
         this.flags.batch_no = null;
         this.qty = 1;
-        this.$refs.debounce_search.focus();
+        if (this.$refs.debounce_search) {
+          this.$refs.debounce_search.focus();
+        }
       }
     },
     search_onchange() {
@@ -441,10 +440,11 @@ export default {
       this.search = null;
       this.first_search = null;
       this.qty = 1;
-      this.$refs.debounce_search.focus();
+      if (this.$refs.debounce_search) {
+        this.$refs.debounce_search.focus();
+      }
     },
     update_items_details(items) {
-      // set debugger
       const vm = this;
       frappe.call({
         method: "ppos.ppos.api.posapp.get_items_details",
@@ -458,10 +458,12 @@ export default {
               const updated_item = r.message.find(
                 (element) => element.item_code == item.item_code
               );
-              item.actual_qty = updated_item.actual_qty;
-              item.serial_no_data = updated_item.serial_no_data;
-              item.batch_no_data = updated_item.batch_no_data;
-              item.item_uoms = updated_item.item_uoms;
+              if (updated_item) {
+                item.actual_qty = updated_item.actual_qty;
+                item.serial_no_data = updated_item.serial_no_data;
+                item.batch_no_data = updated_item.batch_no_data;
+                item.item_uoms = updated_item.item_uoms;
+              }
             });
           }
         },
@@ -472,22 +474,24 @@ export default {
     },
     scan_barcoud() {
       const vm = this;
-      onScan.attachTo(document, {
-        suffixKeyCodes: [],
-        keyCodeMapper: function (oEvent) {
-          oEvent.stopImmediatePropagation();
-          return onScan.decodeKeyEvent(oEvent);
-        },
-        onScan: function (sCode) {
-          setTimeout(() => {
-            vm.trigger_onscan(sCode);
-          }, 300);
-        },
-      });
+      if (window.onScan) {
+        onScan.attachTo(document, {
+          suffixKeyCodes: [],
+          keyCodeMapper: function (oEvent) {
+            oEvent.stopImmediatePropagation();
+            return onScan.decodeKeyEvent(oEvent);
+          },
+          onScan: function (sCode) {
+            setTimeout(() => {
+              vm.trigger_onscan(sCode);
+            }, 300);
+          },
+        });
+      }
     },
     trigger_onscan(sCode) {
       if (this.filtred_items.length == 0) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `No Item has this barcode "${sCode}"`,
           color: "error",
         });
@@ -500,10 +504,8 @@ export default {
     },
     generateWordCombinations(inputString) {
       const words = inputString.split(" ");
-      const wordCount = words.length;
       const combinations = [];
 
-      // Helper function to generate all permutations
       function permute(arr, m = []) {
         if (arr.length === 0) {
           combinations.push(m.join(" "));
@@ -591,7 +593,6 @@ export default {
                 for (let element of item.serial_no_data) {
                   if (element.serial_no == this.search) {
                     found = true;
-                    this.flags.serial_no = null;
                     this.flags.serial_no = this.search;
                     break;
                   }
@@ -608,7 +609,6 @@ export default {
                 for (let element of item.batch_no_data) {
                   if (element.batch_no == this.search) {
                     found = true;
-                    this.flags.batch_no = null;
                     this.flags.batch_no = this.search;
                     break;
                   }
@@ -640,9 +640,8 @@ export default {
     },
   },
 
-  created: function () {
-    this.$nextTick(function () {});
-    evntBus.$on("register_pos_profile", (data) => {
+  created() {
+    evntBus.on("register_pos_profile", (data) => {
       this.pos_profile = data.pos_profile;
       this.get_items();
       this.get_items_groups();
@@ -650,21 +649,21 @@ export default {
         ? "card"
         : "list";
     });
-    evntBus.$on("update_cur_items_details", () => {
+    evntBus.on("update_cur_items_details", () => {
       this.update_cur_items_details();
     });
-    evntBus.$on("update_offers_counters", (data) => {
+    evntBus.on("update_offers_counters", (data) => {
       this.offersCount = data.offersCount;
       this.appliedOffersCount = data.appliedOffersCount;
     });
-    evntBus.$on("update_coupons_counters", (data) => {
+    evntBus.on("update_coupons_counters", (data) => {
       this.couponsCount = data.couponsCount;
       this.appliedCouponsCount = data.appliedCouponsCount;
     });
-    evntBus.$on("update_customer_price_list", (data) => {
+    evntBus.on("update_customer_price_list", (data) => {
       this.customer_price_list = data;
     });
-    evntBus.$on("update_customer", (data) => {
+    evntBus.on("update_customer", (data) => {
       this.customer = data;
     });
   },

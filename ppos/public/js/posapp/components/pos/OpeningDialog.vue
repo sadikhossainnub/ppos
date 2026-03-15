@@ -1,12 +1,9 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="isOpen" persistent max-width="600px">
-      <!-- <template v-slot:activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">Open Dialog</v-btn>
-      </template>-->
       <v-card>
         <v-card-title>
-          <span class="headline primary--text">{{
+          <span class="headline text-primary">{{
             __('Create POS Opening Shift')
           }}</span>
         </v-card-title>
@@ -30,44 +27,35 @@
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12">
-                <template>
-                  <v-data-table
-                    :headers="payments_methods_headers"
-                    :items="payments_methods"
-                    item-key="mode_of_payment"
-                    class="elevation-1"
-                    :items-per-page="itemsPerPage"
-                    hide-default-footer
-                  >
-                    <template v-slot:item.amount="props">
-                      <v-edit-dialog :return-value.sync="props.item.amount">
-                        {{ currencySymbol(props.item.currency) }}
-                        {{ formtCurrency(props.item.amount) }}
-                        <template v-slot:input>
-                          <v-text-field
-                            v-model="props.item.amount"
-                            :rules="[max25chars]"
-                            :label="frappe._('Edit')"
-                            single-line
-                            counter
-                            type="number"
-                          ></v-text-field>
-                        </template>
-                      </v-edit-dialog>
-                    </template>
-                  </v-data-table>
-                </template>
+                <v-data-table
+                  :headers="payments_methods_headers"
+                  :items="payments_methods"
+                  item-value="mode_of_payment"
+                  class="elevation-1"
+                  :items-per-page="itemsPerPage"
+                >
+                  <template v-slot:item.amount="{ item }">
+                    <v-text-field
+                      v-model="item.amount"
+                      :rules="[max25chars]"
+                      :label="frappe._('Edit')"
+                      type="number"
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                    ></v-text-field>
+                  </template>
+                </v-data-table>
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" dark @click="go_desk">Cancel</v-btn>
+          <v-btn color="error" @click="go_desk">Cancel</v-btn>
           <v-btn
             color="success"
             :disabled="is_loading"
-            dark
             @click="submit_dialog"
             >Submit</v-btn
           >
@@ -97,24 +85,21 @@ export default {
       payments_methods: [],
       payments_methods_headers: [
         {
-          text: __('Mode of Payment'),
+          title: __('Mode of Payment'),
           align: 'start',
           sortable: false,
           value: 'mode_of_payment',
         },
         {
-          text: __('Opening Amount'),
+          title: __('Opening Amount'),
           value: 'amount',
           align: 'center',
           sortable: false,
         },
       ],
       itemsPerPage: 100,
-      max25chars: (v) => v.length <= 12 || 'Input too long!', // TODO : should validate as number
+      max25chars: (v) => String(v).length <= 12 || 'Input too long!',
       pagination: {},
-      snack: false, // TODO : need to remove
-      snackColor: '', // TODO : need to remove
-      snackText: '', // TODO : need to remove
     };
   },
   watch: {
@@ -146,7 +131,7 @@ export default {
   },
   methods: {
     close_opening_dialog() {
-      evntBus.$emit('close_opening_dialog');
+      evntBus.emit('close_opening_dialog');
     },
     get_opening_dialog_data() {
       const vm = this;
@@ -179,10 +164,10 @@ export default {
         })
         .then((r) => {
           if (r.message) {
-            evntBus.$emit('register_pos_data', r.message);
-            evntBus.$emit('set_company', r.message.company);
+            evntBus.emit('register_pos_data', r.message);
+            evntBus.emit('set_company', r.message.company);
             vm.close_opening_dialog();
-            is_loading = false;
+            vm.is_loading = false;
           }
         });
     },
@@ -191,7 +176,7 @@ export default {
       location.reload();
     },
   },
-  created: function () {
+  created() {
     this.$nextTick(function () {
       this.get_opening_dialog_data();
     });

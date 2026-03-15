@@ -13,7 +13,7 @@ import POS from './components/pos/Pos.vue';
 import Payments from './components/payments/Pay.vue';
 
 export default {
-  data: function () {
+  data() {
     return {
       page: 'POS',
     };
@@ -38,7 +38,7 @@ export default {
     this.remove_frappe_nav();
   },
   updated() {},
-  created: function () {
+  created() {
     setTimeout(() => {
       this.remove_frappe_nav();
     }, 1000);

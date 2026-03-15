@@ -1,45 +1,47 @@
 <template>
   <div>
     <v-card
-      class="selection mx-auto grey lighten-5"
+      class="selection mx-auto bg-grey-lighten-5"
       style="max-height: 80vh; height: 80vh"
     >
       <v-card-title>
-        <span class="text-h6 primary--text">{{ __('Offers') }}</span>
+        <span class="text-h6 text-primary">{{ __('Offers') }}</span>
       </v-card-title>
       <div class="my-0 py-0 overflow-y-auto" style="max-height: 75vh">
-        <template @mouseover="style = 'cursor: pointer'">
-          <v-data-table
-            :headers="items_headers"
-            :items="pos_offers"
-            :single-expand="singleExpand"
-            :expanded.sync="expanded"
-            show-expand
-            item-key="row_id"
-            class="elevation-1"
-            :items-per-page="itemsPerPage"
-            hide-default-footer
-          >
-            <template v-slot:item.offer_applied="{ item }">
-              <v-simple-checkbox
-                @click="forceUpdateItem"
-                v-model="item.offer_applied"
-                :disabled="
-                  (item.offer == 'Give Product' &&
-                    !item.give_item &&
-                    (!offer.replace_cheapest_item || !offer.replace_item)) ||
-                  (item.offer == 'Grand Total' &&
-                    discount_percentage_offer_name &&
-                    discount_percentage_offer_name != item.name)
-                "
-              ></v-simple-checkbox>
-            </template>
-            <template v-slot:expanded-item="{ headers, item }">
-              <td :colspan="headers.length">
+        <v-data-table
+          :headers="items_headers"
+          :items="pos_offers"
+          :single-expand="singleExpand"
+          v-model:expanded="expanded"
+          show-expand
+          item-value="row_id"
+          class="elevation-1"
+          :items-per-page="itemsPerPage"
+        >
+          <template v-slot:bottom></template>
+          <template v-slot:item.offer_applied="{ item }">
+            <v-checkbox-btn
+              @update:model-value="forceUpdateItem"
+              v-model="item.offer_applied"
+              density="compact"
+              hide-details
+              :disabled="
+                (item.offer == 'Give Product' &&
+                  !item.give_item &&
+                  (!item.replace_cheapest_item || !item.replace_item)) ||
+                (item.offer == 'Grand Total' &&
+                  discount_percentage_offer_name &&
+                  discount_percentage_offer_name != item.name)
+              "
+            ></v-checkbox-btn>
+          </template>
+          <template v-slot:expanded-row="{ columns, item }">
+            <tr>
+              <td :colspan="columns.length">
                 <v-row class="mt-2">
                   <v-col v-if="item.description">
                     <div
-                      class="primary--text"
+                      class="text-primary"
                       v-html="handleNewLine(item.description)"
                     ></div>
                   </v-col>
@@ -47,9 +49,10 @@
                     <v-autocomplete
                       v-model="item.give_item"
                       :items="get_give_items(item)"
-                      item-text="item_code"
-                      outlined
-                      dense
+                      item-title="item_code"
+                      item-value="item_code"
+                      variant="outlined"
+                      density="compact"
                       color="primary"
                       :label="frappe._('Give Item')"
                       :disabled="
@@ -57,13 +60,14 @@
                         item.replace_item ||
                         item.replace_cheapest_item
                       "
+                      hide-details
                     ></v-autocomplete>
                   </v-col>
                 </v-row>
               </td>
-            </template>
-          </v-data-table>
-        </template>
+            </tr>
+          </template>
+        </v-data-table>
       </div>
     </v-card>
 
@@ -77,9 +81,8 @@
           <v-btn
             block
             class="pa-1"
-            large
+            size="large"
             color="warning"
-            dark
             @click="back_to_invoice"
             >{{ __('Back') }}</v-btn
           >
@@ -104,10 +107,10 @@ export default {
     expanded: [],
     singleExpand: true,
     items_headers: [
-      { text: __('Name'), value: 'name', align: 'start' },
-      { text: __('Apply On'), value: 'apply_on', align: 'start' },
-      { text: __('Offer'), value: 'offer', align: 'start' },
-      { text: __('Applied'), value: 'offer_applied', align: 'start' },
+      { title: __('Name'), key: 'name', align: 'start' },
+      { title: __('Apply On'), key: 'apply_on', align: 'start' },
+      { title: __('Offer'), key: 'offer', align: 'start' },
+      { title: __('Applied'), key: 'offer_applied', align: 'start' },
     ],
   }),
 
@@ -122,12 +125,10 @@ export default {
 
   methods: {
     back_to_invoice() {
-      evntBus.$emit('show_offers', 'false');
+      evntBus.emit('show_offers', 'false');
     },
     forceUpdateItem() {
-      let list_offers = [];
-      list_offers = [...this.pos_offers];
-      this.pos_offers = list_offers;
+      this.pos_offers = [...this.pos_offers];
     },
     makeid(length) {
       let result = '';
@@ -178,7 +179,7 @@ export default {
             newOffer.give_item = offer.apply_item_code || 'Nothing';
           }
           if (offer.offer_applied) {
-            newOffer.offer_applied == !!offer.offer_applied;
+            newOffer.offer_applied = !!offer.offer_applied;
           } else {
             if (
               offer.apply_type == 'Item Group' &&
@@ -197,10 +198,13 @@ export default {
             }
           }
           if (newOffer.offer == 'Give Product' && !newOffer.give_item) {
-            newOffer.give_item = this.get_give_items(newOffer)[0].item_code;
+            const giveItems = this.get_give_items(newOffer);
+            if (giveItems.length > 0) {
+              newOffer.give_item = giveItems[0].item_code;
+            }
           }
           this.pos_offers.push(newOffer);
-          evntBus.$emit('show_mesage', {
+          evntBus.emit('show_mesage', {
             text: __('New Offer Available'),
             color: 'warning',
           });
@@ -216,7 +220,7 @@ export default {
       const applyedOffers = this.pos_offers.filter(
         (offer) => offer.offer_applied
       );
-      evntBus.$emit('update_invoice_offers', applyedOffers);
+      evntBus.emit('update_invoice_offers', applyedOffers);
     },
     handleNewLine(str) {
       if (str) {
@@ -227,7 +231,7 @@ export default {
     },
     get_give_items(offer) {
       if (offer.apply_type == 'Item Code') {
-        return [offer.apply_item_code];
+        return [{ item_code: offer.apply_item_code }];
       } else if (offer.apply_type == 'Item Group') {
         const items = this.allItems;
         let filterd_items = [];
@@ -247,7 +251,7 @@ export default {
       }
     },
     updateCounters() {
-      evntBus.$emit('update_offers_counters', {
+      evntBus.emit('update_offers_counters', {
         offersCount: this.offersCount,
         appliedOffersCount: this.appliedOffersCount,
       });
@@ -256,7 +260,7 @@ export default {
       const applyedOffers = this.pos_offers.filter(
         (offer) => offer.offer_applied && offer.coupon_based
       );
-      evntBus.$emit('update_pos_coupons', applyedOffers);
+      evntBus.emit('update_pos_coupons', applyedOffers);
     },
   },
 
@@ -271,24 +275,24 @@ export default {
     },
   },
 
-  created: function () {
+  created() {
     this.$nextTick(function () {
-      evntBus.$on('register_pos_profile', (data) => {
+      evntBus.on('register_pos_profile', (data) => {
         this.pos_profile = data.pos_profile;
       });
     });
-    evntBus.$on('update_customer', (customer) => {
+    evntBus.on('update_customer', (customer) => {
       if (this.customer != customer) {
-        this.offers = [];
+        this.pos_offers = [];
       }
     });
-    evntBus.$on('update_pos_offers', (data) => {
+    evntBus.on('update_pos_offers', (data) => {
       this.updatePosOffers(data);
     });
-    evntBus.$on('update_discount_percentage_offer_name', (data) => {
+    evntBus.on('update_discount_percentage_offer_name', (data) => {
       this.discount_percentage_offer_name = data.value;
     });
-    evntBus.$on('set_all_items', (data) => {
+    evntBus.on('set_all_items', (data) => {
       this.allItems = data;
     });
   },

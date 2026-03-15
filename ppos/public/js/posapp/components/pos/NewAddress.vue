@@ -3,7 +3,7 @@
     <v-dialog v-model="addressDialog" max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline primary--text">{{
+          <span class="headline text-primary">{{
             __('Add New Address')
           }}</span>
         </v-card-title>
@@ -12,30 +12,27 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  dense
                   color="primary"
                   :label="frappe._('Address Name')"
-                  background-color="white"
+                  bg-color="white"
                   hide-details
                   v-model="address.name"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  dense
                   color="primary"
                   :label="frappe._('Address Line 1')"
-                  background-color="white"
+                  bg-color="white"
                   hide-details
                   v-model="address.address_line1"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  dense
                   color="primary"
                   :label="frappe._('Address Line 2')"
-                  background-color="white"
+                  bg-color="white"
                   hide-details
                   v-model="address.address_line2"
                 ></v-text-field>
@@ -43,9 +40,8 @@
               <v-col cols="6">
                 <v-text-field
                   label="City"
-                  dense
                   color="primary"
-                  background-color="white"
+                  bg-color="white"
                   hide-details
                   v-model="address.city"
                 ></v-text-field>
@@ -53,8 +49,7 @@
               <v-col cols="6">
                 <v-text-field
                   label="State"
-                  dense
-                  background-color="white"
+                  bg-color="white"
                   hide-details
                   v-model="address.state"
                 ></v-text-field>
@@ -64,10 +59,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" dark @click="close_dialog">{{
+          <v-btn color="error" @click="close_dialog">{{
             __('Close')
           }}</v-btn>
-          <v-btn color="success" dark @click="submit_dialog">{{
+          <v-btn color="success" @click="submit_dialog">{{
             __('Submit')
           }}</v-btn>
         </v-card-actions>
@@ -101,8 +96,8 @@ export default {
         },
         callback: (r) => {
           if (!r.exc) {
-            evntBus.$emit('add_the_new_address', r.message);
-            evntBus.$emit('show_mesage', {
+            evntBus.emit('add_the_new_address', r.message);
+            evntBus.emit('show_mesage', {
               text: 'Customer Address created successfully.',
               color: 'success',
             });
@@ -114,8 +109,8 @@ export default {
       });
     },
   },
-  created: function () {
-    evntBus.$on('open_new_address', (data) => {
+  created() {
+    evntBus.on('open_new_address', (data) => {
       this.addressDialog = true;
       this.customer = data;
     });

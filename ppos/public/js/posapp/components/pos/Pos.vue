@@ -78,7 +78,7 @@ import Returns from './Returns.vue';
 import MpesaPayments from './Mpesa-Payments.vue';
 
 export default {
-  data: function () {
+  data() {
     return {
       dialog: false,
       pos_profile: '',
@@ -96,7 +96,6 @@ export default {
     Payments,
     Drafts,
     ClosingDialog,
-
     Returns,
     PosOffers,
     PosCoupons,
@@ -117,8 +116,8 @@ export default {
             this.pos_profile = r.message.pos_profile;
             this.pos_opening_shift = r.message.pos_opening_shift;
             this.get_offers(this.pos_profile.name);
-            evntBus.$emit('register_pos_profile', r.message);
-            evntBus.$emit('set_company', r.message.company);
+            evntBus.emit('register_pos_profile', r.message);
+            evntBus.emit('set_company', r.message.company);
             console.info('LoadPosProfile');
           } else {
             this.create_opening_voucher();
@@ -138,9 +137,7 @@ export default {
         )
         .then((r) => {
           if (r.message) {
-            evntBus.$emit('open_ClosingDialog', r.message);
-          } else {
-            // console.log(r);
+            evntBus.emit('open_ClosingDialog', r.message);
           }
         });
     },
@@ -154,7 +151,7 @@ export default {
         )
         .then((r) => {
           if (r.message) {
-            evntBus.$emit('show_mesage', {
+            evntBus.emit('show_mesage', {
               text: `POS Shift Closed`,
               color: 'success',
             });
@@ -172,62 +169,62 @@ export default {
         .then((r) => {
           if (r.message) {
             console.info('LoadOffers');
-            evntBus.$emit('set_offers', r.message);
+            evntBus.emit('set_offers', r.message);
           }
         });
     },
     get_pos_setting() {
       frappe.db.get_doc('POS Settings', undefined).then((doc) => {
-        evntBus.$emit('set_pos_settings', doc);
+        evntBus.emit('set_pos_settings', doc);
       });
     },
   },
 
-  mounted: function () {
+  mounted() {
     this.$nextTick(function () {
       this.check_opening_entry();
       this.get_pos_setting();
-      evntBus.$on('close_opening_dialog', () => {
+      evntBus.on('close_opening_dialog', () => {
         this.dialog = false;
       });
-      evntBus.$on('register_pos_data', (data) => {
+      evntBus.on('register_pos_data', (data) => {
         this.pos_profile = data.pos_profile;
         this.get_offers(this.pos_profile.name);
         this.pos_opening_shift = data.pos_opening_shift;
-        evntBus.$emit('register_pos_profile', data);
+        evntBus.emit('register_pos_profile', data);
         console.info('LoadPosProfile');
       });
-      evntBus.$on('show_payment', (data) => {
-        this.payment = true ? data === 'true' : false;
-        this.offers = false ? data === 'true' : false;
-        this.coupons = false ? data === 'true' : false;
+      evntBus.on('show_payment', (data) => {
+        this.payment = data === 'true';
+        this.offers = false;
+        this.coupons = false;
       });
-      evntBus.$on('show_offers', (data) => {
-        this.offers = true ? data === 'true' : false;
-        this.payment = false ? data === 'true' : false;
-        this.coupons = false ? data === 'true' : false;
+      evntBus.on('show_offers', (data) => {
+        this.offers = data === 'true';
+        this.payment = false;
+        this.coupons = false;
       });
-      evntBus.$on('show_coupons', (data) => {
-        this.coupons = true ? data === 'true' : false;
-        this.offers = false ? data === 'true' : false;
-        this.payment = false ? data === 'true' : false;
+      evntBus.on('show_coupons', (data) => {
+        this.coupons = data === 'true';
+        this.offers = false;
+        this.payment = false;
       });
-      evntBus.$on('open_closing_dialog', () => {
+      evntBus.on('open_closing_dialog', () => {
         this.get_closing_data();
       });
-      evntBus.$on('submit_closing_pos', (data) => {
+      evntBus.on('submit_closing_pos', (data) => {
         this.submit_closing_pos(data);
       });
     });
   },
-  beforeDestroy() {
-    evntBus.$off('close_opening_dialog');
-    evntBus.$off('register_pos_data');
-    evntBus.$off('LoadPosProfile');
-    evntBus.$off('show_offers');
-    evntBus.$off('show_coupons');
-    evntBus.$off('open_closing_dialog');
-    evntBus.$off('submit_closing_pos');
+  beforeUnmount() {
+    evntBus.off('close_opening_dialog');
+    evntBus.off('register_pos_data');
+    evntBus.off('LoadPosProfile');
+    evntBus.off('show_offers');
+    evntBus.off('show_coupons');
+    evntBus.off('open_closing_dialog');
+    evntBus.off('submit_closing_pos');
   },
 };
 </script>
