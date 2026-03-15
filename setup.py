@@ -4,8 +4,11 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as f:
     install_requires = f.read().strip().split("\n")
 
+import re
+
 # get version from __version__ variable in ppos/__init__.py
-from ppos import __version__ as version
+with open("ppos/__init__.py") as f:
+    version = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', f.read()).group(1)
 
 setup(
     name="ppos",
