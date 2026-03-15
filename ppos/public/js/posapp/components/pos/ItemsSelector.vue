@@ -92,7 +92,7 @@
                 
                 <div class="text-subtitle-1 font-weight-bold text-truncate mb-1">{{ item.item_name }}</div>
                 <div class="text-body-2 font-weight-bold text-primary">
-                  {{ currencySymbol(item.currency) }} {{ formtCurrency(item.rate) }} 
+                  {{ currencySymbol(item.currency || pos_profile.currency) }} {{ formtCurrency(item.rate || item.price_list_rate) }} 
                   <span class="text-caption text-grey font-weight-regular">/ {{ item.stock_uom }}</span>
                 </div>
               </div>
@@ -115,7 +115,7 @@
               <td class="font-weight-bold">{{ item.item_name }}</td>
               <td v-if="pos_profile.ppos_display_item_code" class="text-grey">{{ item.item_code }}</td>
               <td class="text-primary font-weight-bold">
-                {{ currencySymbol(item.currency) }} {{ formtCurrency(item.rate) }}
+                {{ currencySymbol(item.currency || pos_profile.currency) }} {{ formtCurrency(item.rate || item.price_list_rate) }}
               </td>
               <td>
                 <v-chip size="small" :color="item.actual_qty > 0 ? 'success' : 'error'" variant="tonal">

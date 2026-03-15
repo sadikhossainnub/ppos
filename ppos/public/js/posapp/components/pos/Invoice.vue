@@ -48,7 +48,7 @@
             </v-avatar>
             <div class="overflow-hidden">
               <div class="text-body-2 font-weight-bold text-truncate">{{ item.item_name }}</div>
-              <div class="text-caption text-grey">Price: {{ formtCurrency(item.rate) }}</div>
+              <div class="text-caption text-grey">Price: {{ currencySymbol(pos_profile.currency) }} {{ formtCurrency(item.rate) }}</div>
             </div>
           </v-col>
           <v-col cols="3" class="text-center">
