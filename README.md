@@ -3,13 +3,13 @@
     <h2>PPOS</h2>
 </div>
 
-#### An open-source Point of Sale for [Erpnext](https://github.com/frappe/erpnext) using [Vue.js](https://github.com/vuejs/vue) and [Vuetify](https://github.com/vuetifyjs/vuetify)
+#### An open-source Point of Sale for [ERPNext](https://github.com/frappe/erpnext) using [Vue 3](https://github.com/vuejs/core) and [Vuetify 3](https://github.com/vuetifyjs/vuetify)
 
 ---
 
 ### Main Features
 
-1. Supports Erpnext Version 14
+1. Supports ERPNext Version 16
 2. User friendly and provides a good user experience and speed of use
 3. The cashier has the option of either using list view or card view during sales transactions. Card view shows the images of the items
 4. Supports enqueue invoice submission after printing the receipt for faster processing
@@ -51,7 +51,7 @@ One-click installing available if you are hosting on FC from [here](https://frap
 
 #### Self Hosting:
 
-1. `bench get-app branch version-14 https://github.com/yrestom/PPOS.git`
+1. `bench get-app branch version-16 https://github.com/yrestom/PPOS.git`
 2. `bench setup requirements`
 3. `bench build --app ppos`
 4. `bench restart`
