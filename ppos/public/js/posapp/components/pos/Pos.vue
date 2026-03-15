@@ -11,12 +11,12 @@
     <v-row v-show="!dialog" class="fill-height ma-0">
       <v-col
         v-show="!payment && !offers && !coupons"
-        xl="6"
-        lg="6"
-        md="6"
+        xl="7"
+        lg="7"
+        md="7"
         sm="12"
         cols="12"
-        class="pos pa-1"
+        class="pos pa-1 h-100"
       >
         <ItemsSelector></ItemsSelector>
       </v-col>
@@ -54,7 +54,7 @@
         <Payments></Payments>
       </v-col>
 
-      <v-col xl="6" lg="6" md="6" sm="12" cols="12" class="pos pa-1">
+      <v-col xl="5" lg="5" md="5" sm="12" cols="12" class="pos pa-1 h-100">
         <Invoice></Invoice>
       </v-col>
     </v-row>

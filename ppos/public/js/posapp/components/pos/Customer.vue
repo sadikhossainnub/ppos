@@ -1,49 +1,53 @@
 <template>
   <div>
+    <v-card v-if="customer" class="pa-4 mb-4 rounded-xl border-dashed" border>
+      <div class="d-flex align-center">
+        <v-avatar color="grey-lighten-4" size="56" class="mr-4">
+          <span class="text-h6 font-weight-bold text-grey-darken-1">{{ customer.substring(0, 1).toUpperCase() }}</span>
+        </v-avatar>
+        <div class="flex-grow-1">
+          <div class="text-subtitle-1 font-weight-bold">{{ customer }}</div>
+          <div class="text-caption text-grey">Walking Customer / Balance: 0</div>
+        </div>
+        <v-btn icon="mdi-close" variant="text" size="small" @click="customer = null"></v-btn>
+      </div>
+    </v-card>
+
     <v-autocomplete
+      v-else
       clearable
       auto-select-first
       color="primary"
-      :label="frappe._('Customer')"
+      placeholder="Search or add customer..."
       v-model="customer"
       :items="customers"
       item-title="customer_name"
       item-value="name"
+      variant="solo-filled"
+      bg-color="grey-lighten-4"
+      flat
+      rounded="lg"
       :no-data-text="__('Customer not found')"
       hide-details
       :custom-filter="customFilter"
       :disabled="readonly"
-      append-icon="mdi-plus"
-      @click:append="new_customer"
-      prepend-inner-icon="mdi-account-edit"
-      @click:prepend-inner="edit_customer"
+      prepend-inner-icon="mdi-account-search"
+      append-inner-icon="mdi-plus"
+      @click:append-inner="new_customer"
     >
       <template v-slot:item="{ props, item }">
         <v-list-item v-bind="props">
-          <v-list-item-title class="text-primary subtitle-1">
+          <v-list-item-title class="font-weight-bold">
             {{ item.raw.customer_name }}
           </v-list-item-title>
-          <v-list-item-subtitle v-if="item.raw.customer_name != item.raw.name">
+          <v-list-item-subtitle class="text-caption">
             ID: {{ item.raw.name }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle v-if="item.raw.tax_id">
-            TAX ID: {{ item.raw.tax_id }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle v-if="item.raw.email_id">
-            Email: {{ item.raw.email_id }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle v-if="item.raw.mobile_no">
-            Mobile No: {{ item.raw.mobile_no }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle v-if="item.raw.primary_address">
-            Primary Address: {{ item.raw.primary_address }}
           </v-list-item-subtitle>
         </v-list-item>
       </template>
     </v-autocomplete>
-    <div class="mb-8">
-      <UpdateCustomer></UpdateCustomer>
-    </div>
+    
+    <UpdateCustomer></UpdateCustomer>
   </div>
 </template>
 

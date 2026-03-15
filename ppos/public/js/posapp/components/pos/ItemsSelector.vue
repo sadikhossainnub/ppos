@@ -1,165 +1,179 @@
 <template>
-  <div>
-    <v-card
-      class="selection mx-auto bg-grey-lighten-5 mt-1"
-      style="max-height: 80vh; height: 80vh"
-    >
-      <v-progress-linear
-        :active="loading"
-        :indeterminate="loading"
-        absolute
-        location="top"
-        color="info"
-      ></v-progress-linear>
-      <v-row class="items px-2 py-1">
-        <v-col class="pb-0 mb-2">
+  <div class="h-100 d-flex flex-column">
+    <div class="px-6 py-4 bg-white">
+      <v-row align="center" no-gutters>
+        <v-col cols="4">
+          <h2 class="text-h5 font-weight-bold text-grey-darken-3">All Items</h2>
+        </v-col>
+        <v-col cols="4" class="px-2">
           <v-text-field
-            clearable
-            autofocus
-            color="primary"
-            :label="frappe._('Search Items')"
-            hint="Search by item code, serial number, batch no or barcode"
-            hide-details
             v-model="debounce_search"
-            @keydown.esc="esc_event"
-            @keydown.enter="search_onchange"
-            ref="debounce_search"
+            placeholder="Search item code, serial or barcode..."
+            prepend-inner-icon="mdi-magnify"
+            flat
+            density="compact"
+            variant="solo-filled"
+            bg-color="grey-lighten-4"
+            rounded="lg"
+            hide-details
           ></v-text-field>
         </v-col>
-        <v-col cols="3" class="pb-0 mb-2" v-if="pos_profile.ppos_input_qty">
-          <v-text-field
-            color="primary"
-            :label="frappe._('QTY')"
-            hide-details
-            v-model.number="qty"
-            type="number"
-            @keydown.enter="enter_event"
-            @keydown.esc="esc_event"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="2" class="pb-0 mb-2" v-if="pos_profile.ppos_new_line">
-          <v-checkbox
-            v-model="new_line"
-            color="accent"
-            label="NLine"
-            hide-details
-          ></v-checkbox>
-        </v-col>
-        <v-col cols="12" class="pt-0 mt-0">
-          <div fluid class="items" v-if="items_view == 'card'">
-            <v-row dense class="overflow-y-auto" style="max-height: 72vh">
-              <v-col
-                v-for="(item, idx) in filtred_items"
-                :key="idx"
-                xl="2"
-                lg="3"
-                md="6"
-                sm="6"
-                cols="6"
-                min-height="50"
-              >
-                <v-card hover @click="add_item(item)">
-                  <v-img
-                    :src="
-                      item.image ||
-                      '/assets/ppos/js/posapp/components/pos/placeholder-image.png'
-                    "
-                    class="text-white align-end"
-                    gradient="to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)"
-                    height="100px"
-                  >
-                    <v-card-text
-                      v-text="item.item_name"
-                      class="text-caption px-1 pb-0"
-                    ></v-card-text>
-                  </v-img>
-                  <v-card-text class="text-primary pa-1">
-                    <div class="text-caption text-primary">
-                      {{ currencySymbol(item.currency) || "" }}
-                      {{ formtCurrency(item.rate) || 0 }}
-                    </div>
-                    <div class="text-caption text-golden">
-                      {{ formtFloat(item.actual_qty) || 0 }}
-                      {{ item.stock_uom || "" }}
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </div>
-          <div fluid class="items" v-if="items_view == 'list'">
-            <div class="my-0 py-0 overflow-y-auto" style="max-height: 70vh">
-              <v-data-table
-                :headers="getItmesHeaders()"
-                :items="filtred_items"
-                item-value="item_code"
-                class="elevation-1"
-                :items-per-page="itemsPerPage"
-              >
-                <template v-slot:bottom></template>
-                <template v-slot:item="{ item }">
-                  <tr @click="add_item(item)">
-                    <td v-if="pos_profile.ppos_display_item_code">{{ item.item_name }}</td>
-                    <td v-else>{{ item.item_name }}</td>
-                    <td v-if="pos_profile.ppos_display_item_code">{{ item.item_code }}</td>
-                    <td>
-                      <span class="text-primary">
-                        {{ currencySymbol(item.currency) }}
-                        {{ formtCurrency(item.rate) }}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="text-golden">{{
-                        formtFloat(item.actual_qty)
-                      }}</span>
-                    </td>
-                    <td>{{ item.stock_uom }}</td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card>
-    <v-card class="cards mb-0 mt-3 pa-2 bg-grey-lighten-5">
-      <v-row no-gutters align="center" justify="center">
-        <v-col cols="12">
+        <v-col cols="4">
           <v-select
-            :items="items_group"
-            :label="frappe._('Items Group')"
-            hide-details
             v-model="item_group"
+            :items="items_group"
+            placeholder="Category"
+            flat
+            density="compact"
+            variant="solo-filled"
+            bg-color="grey-lighten-4"
+            rounded="lg"
+            hide-details
             @update:model-value="search_onchange"
           ></v-select>
         </v-col>
-        <v-col cols="3" class="mt-1">
-          <v-btn-toggle
-            v-model="items_view"
-            color="primary"
-            variant="group"
-            density="compact"
-            rounded
-          >
-            <v-btn size="small" value="list">{{ __("List") }}</v-btn>
-            <v-btn size="small" value="card">{{ __("Card") }}</v-btn>
-          </v-btn-toggle>
-        </v-col>
-        <v-col cols="4" class="mt-2">
-          <v-btn size="small" block color="primary" variant="text" @click="show_coupons"
-            >{{ couponsCount }} {{ __("Coupons") }}</v-btn
-          >
-        </v-col>
-        <v-col cols="5" class="mt-2">
-          <v-btn size="small" block color="primary" variant="text" @click="show_offers"
-            >{{ offersCount }} {{ __("Offers") }} : {{ appliedOffersCount }}
-            {{ __("Applied") }}</v-btn
-          >
-        </v-col>
       </v-row>
-    </v-card>
+    </div>
+
+    <v-divider></v-divider>
+
+    <div class="flex-grow-1 overflow-y-auto px-4 py-4 bg-white">
+      <v-progress-linear
+        v-if="loading"
+        indeterminate
+        color="primary"
+        height="2"
+      ></v-progress-linear>
+
+      <div v-if="items_view == 'card'">
+        <v-row dense>
+          <v-col
+            v-for="(item, idx) in filtred_items"
+            :key="idx"
+            xl="3"
+            lg="4"
+            md="6"
+            sm="6"
+            cols="6"
+            class="pa-2"
+          >
+            <v-card 
+              hover 
+              @click="add_item(item)" 
+              class="item-card border rounded-xl"
+              elevation="0"
+            >
+              <div class="pa-3 position-relative">
+                <div class="badge-container position-absolute" style="top: 10px; right: 10px; z-index: 1;">
+                  <v-chip
+                    size="x-small"
+                    :color="item.actual_qty > 0 ? 'success' : 'error'"
+                    variant="flat"
+                    density="comfortable"
+                    class="font-weight-bold"
+                  >
+                    <v-icon start size="10" icon="mdi-circle"></v-icon>
+                    {{ formtFloat(item.actual_qty) }}
+                  </v-chip>
+                </div>
+                
+                <v-img
+                  :src="item.image || '/assets/ppos/js/posapp/components/pos/placeholder-image.png'"
+                  height="140px"
+                  cover
+                  class="rounded-lg bg-grey-lighten-4 mb-3"
+                >
+                  <template v-slot:placeholder>
+                    <div class="fill-height d-flex align-center justify-center text-h3 font-weight-bold text-grey-lighten-1">
+                      {{ item.item_name.substring(0, 2).toUpperCase() }}
+                    </div>
+                  </template>
+                </v-img>
+                
+                <div class="text-subtitle-1 font-weight-bold text-truncate mb-1">{{ item.item_name }}</div>
+                <div class="text-body-2 font-weight-bold text-primary">
+                  {{ currencySymbol(item.currency) }} {{ formtCurrency(item.rate) }} 
+                  <span class="text-caption text-grey font-weight-regular">/ {{ item.stock_uom }}</span>
+                </div>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+
+      <div v-else-if="items_view == 'list'">
+        <v-data-table
+          :headers="getItmesHeaders()"
+          :items="filtred_items"
+          item-value="item_code"
+          density="comfortable"
+          hover
+        >
+          <template v-slot:bottom></template>
+          <template v-slot:item="{ item }">
+            <tr @click="add_item(item)" style="cursor: pointer">
+              <td class="font-weight-bold">{{ item.item_name }}</td>
+              <td v-if="pos_profile.ppos_display_item_code" class="text-grey">{{ item.item_code }}</td>
+              <td class="text-primary font-weight-bold">
+                {{ currencySymbol(item.currency) }} {{ formtCurrency(item.rate) }}
+              </td>
+              <td>
+                <v-chip size="small" :color="item.actual_qty > 0 ? 'success' : 'error'" variant="tonal">
+                  {{ formtFloat(item.actual_qty) }} {{ item.stock_uom }}
+                </v-chip>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </div>
+    </div>
+    
+    <div class="pa-4 bg-white border-t d-flex align-center">
+      <v-btn-toggle
+        v-model="items_view"
+        color="primary"
+        variant="tonal"
+        density="compact"
+        mandatory
+        rounded="lg"
+      >
+        <v-btn value="list" prepend-icon="mdi-format-list-bulleted">List</v-btn>
+        <v-btn value="card" prepend-icon="mdi-view-grid">Grid</v-btn>
+      </v-btn-toggle>
+      
+      <v-spacer></v-spacer>
+      
+      <v-btn
+        variant="text"
+        color="primary"
+        prepend-icon="mdi-ticket-percent"
+        @click="show_coupons"
+        class="mr-2"
+      >
+        {{ couponsCount }} Coupons
+      </v-btn>
+      <v-btn
+        variant="tonal"
+        color="primary"
+        prepend-icon="mdi-sale"
+        @click="show_offers"
+      >
+        {{ offersCount }} Offers ({{ appliedOffersCount }} Applied)
+      </v-btn>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.item-card {
+  transition: transform 0.2s;
+  border-radius: 12px !important;
+}
+.item-card:hover {
+  transform: translateY(-4px);
+  border-color: #1A1A1A !important;
+}
+</style>
 
 <script>
 import { evntBus } from "../../bus";

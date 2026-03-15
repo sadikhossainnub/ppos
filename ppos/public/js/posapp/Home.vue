@@ -48,6 +48,9 @@ export default {
 
 <style scoped>
 .container1 {
-  margin-top: 0px;
+  background-color: #F8F9FA !important;
+}
+:deep(.v-main) {
+  background-color: #F8F9FA !important;
 }
 </style>

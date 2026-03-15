@@ -1,28 +1,31 @@
 <template>
   <nav>
-    <v-app-bar height="40" class="elevation-2">
-      <v-app-bar-nav-icon
-        @click.stop="drawer = !drawer"
-        class="text-grey"
-      ></v-app-bar-nav-icon>
-      <v-img
-        src="/assets/ppos/js/posapp/components/pos/pos.png"
-        alt="PPOS"
-        max-width="32"
-        class="mr-2"
-        color="primary"
-      ></v-img>
+    <v-app-bar height="60" border="b" color="white" elevation="0">
       <v-toolbar-title
         @click="go_desk"
         style="cursor: pointer"
-        class="text-uppercase text-primary"
+        class="font-weight-bold text-primary"
       >
-        <span>PPOS</span>
+        <span>{{ company }}</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <v-btn style="cursor: unset" variant="text" color="primary">
-        <span right>{{ pos_profile.name }}</span>
+      
+      <v-btn
+        variant="tonal"
+        color="grey-darken-3"
+        class="mr-2"
+        @click="changePage('Recent Orders')"
+      >
+        Recent Orders
+      </v-btn>
+
+      <v-btn
+        variant="flat"
+        color="primary"
+        @click="new_invoice"
+      >
+        New Invoice
       </v-btn>
       <div class="text-center">
         <v-menu offset-y>
@@ -80,7 +83,7 @@
       v-model="drawer"
       :rail="mini"
       app
-      class="bg-primary margen-top"
+      class="bg-white border-e"
       width="170"
     >
       <v-list theme="dark">
