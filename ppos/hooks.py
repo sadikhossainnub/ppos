@@ -16,8 +16,10 @@ required_apps = ["erpnext"]
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/ppos/css/ppos.css"
-# app_include_js = "/assets/ppos/js/ppos.js"
+app_include_css = [
+    "https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css",
+    "https://cdn.jsdelivr.net/npm/vuetify@3.5.10/dist/vuetify.min.css"
+]
 app_include_js = [
     "ppos.bundle.js",
 ]
