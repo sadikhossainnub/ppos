@@ -2,7 +2,7 @@
   <v-app class="container1">
     <v-main>
       <Navbar @changePage="setPage($event)"></Navbar>
-      <component v-bind:is="page" class="mx-4 md-4"></component>
+      <component v-bind:is="page" class="mx-1 my-1"></component>
     </v-main>
   </v-app>
 </template>

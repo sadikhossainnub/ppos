@@ -19,8 +19,8 @@
       </v-card>
     </v-dialog>
     <v-card
-      style="max-height: 70vh; height: 70vh"
-      class="cards my-0 py-0 mt-3 bg-grey-lighten-5"
+      style="max-height: 75vh; height: 75vh"
+      class="cards my-0 py-0 mt-1 bg-grey-lighten-5"
     >
       <v-row align="center" class="items px-2 py-1">
         <v-col
@@ -148,7 +148,7 @@
         </v-col>
       </v-row>
 
-      <div class="my-0 py-0 overflow-y-auto" style="max-height: 60vh">
+      <div class="my-0 py-0 overflow-y-auto" style="max-height: 65vh">
         <template @mouseover="style = 'cursor: pointer'">
           <v-data-table
             :headers="items_headers"
@@ -619,7 +619,7 @@
         </template>
       </div>
     </v-card>
-    <v-card class="cards mb-0 mt-3 py-0 bg-grey-lighten-5">
+    <v-card class="cards mb-0 mt-1 py-0 bg-grey-lighten-5">
       <v-row no-gutters>
         <v-col cols="7">
           <v-row no-gutters class="pa-1 pt-9 pr-1">

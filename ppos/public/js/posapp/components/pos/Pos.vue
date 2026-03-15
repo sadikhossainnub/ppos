@@ -8,53 +8,53 @@
     <MpesaPayments></MpesaPayments>
     <Variants></Variants>
     <OpeningDialog v-if="dialog" :dialog="dialog"></OpeningDialog>
-    <v-row v-show="!dialog">
+    <v-row v-show="!dialog" class="fill-height ma-0">
       <v-col
         v-show="!payment && !offers && !coupons"
-        xl="5"
-        lg="5"
-        md="5"
-        sm="5"
+        xl="6"
+        lg="6"
+        md="6"
+        sm="12"
         cols="12"
-        class="pos pr-0"
+        class="pos pa-1"
       >
         <ItemsSelector></ItemsSelector>
       </v-col>
       <v-col
         v-show="offers"
-        xl="5"
-        lg="5"
-        md="5"
-        sm="5"
+        xl="6"
+        lg="6"
+        md="6"
+        sm="12"
         cols="12"
-        class="pos pr-0"
+        class="pos pa-1"
       >
         <PosOffers></PosOffers>
       </v-col>
       <v-col
         v-show="coupons"
-        xl="5"
-        lg="5"
-        md="5"
-        sm="5"
+        xl="6"
+        lg="6"
+        md="6"
+        sm="12"
         cols="12"
-        class="pos pr-0"
+        class="pos pa-1"
       >
         <PosCoupons></PosCoupons>
       </v-col>
       <v-col
         v-show="payment"
-        xl="5"
-        lg="5"
-        md="5"
-        sm="5"
+        xl="6"
+        lg="6"
+        md="6"
+        sm="12"
         cols="12"
-        class="pos pr-0"
+        class="pos pa-1"
       >
         <Payments></Payments>
       </v-col>
 
-      <v-col xl="7" lg="7" md="7" sm="7" cols="12" class="pos">
+      <v-col xl="6" lg="6" md="6" sm="12" cols="12" class="pos pa-1">
         <Invoice></Invoice>
       </v-col>
     </v-row>

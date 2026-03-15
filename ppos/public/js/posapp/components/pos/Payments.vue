@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="selection mx-auto bg-grey-lighten-5 pa-1"
-      style="max-height: 76vh; height: 76vh"
+      style="max-height: 80vh; height: 80vh"
     >
       <v-progress-linear
         :active="loading"
@@ -11,7 +11,7 @@
         location="top"
         color="info"
       ></v-progress-linear>
-      <div class="overflow-y-auto px-2 pt-2" style="max-height: 75vh">
+      <div class="overflow-y-auto px-2 pt-2" style="max-height: 78vh">
         <v-row v-if="invoice_doc" class="px-1 py-0">
           <v-col cols="7">
             <v-text-field
