@@ -19,6 +19,7 @@ required_apps = ["erpnext"]
 # app_include_css = "/assets/ppos/css/ppos.css"
 # app_include_js = "/assets/ppos/js/ppos.js"
 app_include_js = [
+    "/assets/ppos/node_modules/vue/dist/vue.js",
     "/assets/ppos/node_modules/vuetify/dist/vuetify.js",
     "ppos.bundle.js",
 ]
